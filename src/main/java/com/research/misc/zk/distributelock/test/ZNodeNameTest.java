@@ -20,6 +20,10 @@ package com.research.misc.zk.distributelock.test;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.junit.Test;
+
+import com.research.misc.zk.distributelock.ZNodeName;
+
 import junit.framework.TestCase;
 
 /**

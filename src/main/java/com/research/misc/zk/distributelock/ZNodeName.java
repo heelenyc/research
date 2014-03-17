@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  * and can be sorted in order
  *
  */
-class ZNodeName implements Comparable<ZNodeName> {
+public class ZNodeName implements Comparable<ZNodeName> {
     private final String name;
     private String prefix;
     private int sequence = -1;
