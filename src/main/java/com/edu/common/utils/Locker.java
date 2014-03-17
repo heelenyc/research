@@ -1,4 +1,4 @@
-package com.edu.utils;
+package com.edu.common.utils;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -15,8 +15,8 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
-import com.immomo.hubble.common.mongo.MongoCollection;
-import com.immomo.hubble.common.mongo.MongoCollectionFactory;
+import com.edu.common.mongo.MongoCollection;
+import com.edu.common.mongo.MongoCollectionFactory;
 
 /**
  * 通用锁实现

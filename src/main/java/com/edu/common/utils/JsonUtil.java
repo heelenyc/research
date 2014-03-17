@@ -1,4 +1,4 @@
-package com.edu.utils;
+package com.edu.common.utils;
 
 import java.io.IOException;
 import java.lang.reflect.Type;

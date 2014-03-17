@@ -1,6 +1,6 @@
 package com.edu.heelenyc.springtest;
 
-import com.edu.utils.SpringBeanUtil;
+import com.edu.common.utils.SpringBeanUtil;
 
 /**
  * @author yicheng

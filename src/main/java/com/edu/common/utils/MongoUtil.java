@@ -1,4 +1,4 @@
-package com.edu.utils;
+package com.edu.common.utils;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;

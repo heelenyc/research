@@ -1,4 +1,4 @@
-package com.edu.utils;
+package com.edu.common.utils;
 
 import java.text.ParseException;
 import java.util.Date;

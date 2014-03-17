@@ -1,4 +1,4 @@
-package com.edu.utils;
+package com.edu.common.utils;
 
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -18,7 +18,7 @@ public final class SpringBeanUtil {
 
     private static AbstractApplicationContext getApplicationContext() {
         if (context == null) {
-            context = new ClassPathXmlApplicationContext(new String[]{"conf/ApplicationContext.xml"});
+            context = new ClassPathXmlApplicationContext(new String[]{"conf/applicationContext.xml","conf/applicationContext-quartz.xml"});
         }
         return context;
     }
