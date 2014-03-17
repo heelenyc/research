@@ -1,0 +1,31 @@
+package com.research.misc;
+
+import com.immomo.mcf.util.Pair;
+
+ 
+/**
+ * @author yicheng
+ * @since 2014年2月25日
+ *
+ */
+public class TestTryblock {
+
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+       //System.out.println(number("||1d".split("\\|")[1]));
+        new Pair<Double, Double>(null,12312.33d);
+        
+    }
+    
+    static int test(){
+        int x = 1;
+        try{
+            return x;
+        }finally{
+            x++;
+        }
+    }
+
+}
