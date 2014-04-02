@@ -99,7 +99,14 @@ public class TestMain {
 //        
 //        //ConcurrentHashMap<Object, Integet>
 //        System.out.println(Double.isNaN(0d/0 ));
-        fun(new String[]{"hello,","world"});
+//        fun(new String[]{"hello,","world"});
+        
+//        String masterString = "edsn / sdfsdf";
+//        String sub = "edsn".split("\\+|\\-|\\*|\\/")[0];
+//        System.out.println(sub);
+        
+        String str = "2324.0";
+        System.out.println(str.substring(0,str.indexOf(".")));
         
     }
     
