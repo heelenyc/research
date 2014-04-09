@@ -15,8 +15,8 @@ public class TestTryblock {
      */
     public static void main(String[] args) {
        //System.out.println(number("||1d".split("\\|")[1]));
-        new Pair<Double, Double>(null,12312.33d);
-        
+//        new Pair<Double, Double>(null,12312.33d);
+        System.out.println(Double.NaN >= 0.0d);
     }
     
     static int test(){
