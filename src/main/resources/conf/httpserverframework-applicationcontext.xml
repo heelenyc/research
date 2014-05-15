@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+
+	<!-- 基于http协议的日志服务，内置http server deamon 用于http调用的方式使用脚本监控 -->
+	<bean id="taskHandler"
+		class="com.immomo.moaservice.hubble.data.server.handler.TaskHandler">
+		<property name="uriKey" value="/task" />
+	</bean>
+	<bean id="alarmProxyHandler"
+		class="com.immomo.moaservice.hubble.data.server.handler.AlarmProxyHandler">
+		<property name="uriKey" value="/alarmproxy" />
+	</bean>
+	<bean id="dispatchRequestHandler"
+		class="com.immomo.moaservice.hubble.data.server.DispatchRequestHandler"
+		init-method="init">
+		<property name="handlerList">
+			<list>
+				<ref bean="taskHandler" />
+				<ref bean="alarmProxyHandler" />
+			</list>
+		</property>
+	</bean>
+	<bean class="com.immomo.moaservice.hubble.data.server.HubbleHttpServer"
+		init-method="start" destroy-method="stop">
+		<constructor-arg index="0" value="" type="java.lang.String" />
+		<constructor-arg index="1" value="8001" type="int" />
+		<property name="handle" ref="dispatchRequestHandler"></property>
+	</bean>
+
+</beans>
