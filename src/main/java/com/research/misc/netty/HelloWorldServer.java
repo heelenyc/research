@@ -1,8 +1,6 @@
 package com.research.misc.netty;
 
-import java.io.InputStream;
 import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.util.concurrent.Executors;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
