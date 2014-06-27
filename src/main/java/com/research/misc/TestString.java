@@ -1,7 +1,9 @@
 package com.research.misc;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -53,18 +55,24 @@ public class TestString {
 //        String monitorKeySetStr = StringUtils.join(top5, ',');
 //        System.out.println(monitorKeySetStr);
         
-        Calendar nowDate = Calendar.getInstance(); 
-        nowDate.set(Calendar.HOUR_OF_DAY, 0);  
-        System.out.println(nowDate.getTime());
-        System.out.println(nowDate.get(Calendar.AM));
-        System.out.println(nowDate.get(Calendar.AM_PM));
-        System.out.println(nowDate.get(Calendar.HOUR));
+//        Calendar nowDate = Calendar.getInstance(); 
+//        nowDate.set(Calendar.HOUR_OF_DAY, 0);  
+//        System.out.println(nowDate.getTime());
+//        System.out.println(nowDate.get(Calendar.AM));
+//        System.out.println(nowDate.get(Calendar.AM_PM));
+//        System.out.println(nowDate.get(Calendar.HOUR));
+//        
+//        nowDate.set(Calendar.HOUR_OF_DAY, 12);  
+//        System.out.println(nowDate.getTime());
+//        System.out.println(nowDate.get(Calendar.AM));
+//        System.out.println(nowDate.get(Calendar.AM_PM));
+//        System.out.println(nowDate.get(Calendar.HOUR));
         
-        nowDate.set(Calendar.HOUR_OF_DAY, 12);  
-        System.out.println(nowDate.getTime());
-        System.out.println(nowDate.get(Calendar.AM));
-        System.out.println(nowDate.get(Calendar.AM_PM));
-        System.out.println(nowDate.get(Calendar.HOUR));
+        Map<String, Object> info = new HashMap<String, Object>();
+        info.put("platform", "platform");
+        info.put("operator", "operator");
+        info.put("event", "event");
+        System.out.println(info.toString());
     }
 
 }
