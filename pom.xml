@@ -21,11 +21,6 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>org.jboss.netty</groupId>
-			<artifactId>netty</artifactId>
-			<version>3.2.9.Final</version>
-		</dependency>
-		<dependency>
 			<groupId>com.immomo.mk</groupId>
 			<artifactId>momokeeper</artifactId>
 			<version>0.7.3</version>
@@ -94,6 +89,11 @@
 			<groupId>org.xlightweb</groupId>
 			<artifactId>xlightweb</artifactId>
 			<version>2.13.2</version>
+		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>5.0.0.Alpha1</version>
 		</dependency>
 	</dependencies>
 </project>

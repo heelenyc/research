@@ -20,7 +20,7 @@ public class TestTreeMap {
         // map = new LinkedHashMap<>();
         // fun(map);
 
-        map = new TreeMap<>();
+        map = new TreeMap<String, Integer>();
         fun(map);
     }
 
