@@ -28,13 +28,14 @@ public class TestMain {
      */
     public static void main(String[] args) {
         try {
-            ClassLoader loader = TestMain.class.getClassLoader();
-            System.out.println(System.getenv());
-            new TestMain().div();
+//            ClassLoader loader = TestMain.class.getClassLoader();
+//            System.out.println(System.getenv());
+            new TestMain().test();
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error("logger:", e);
-            logger1.error("logger:", e);
+            System.out.println(e.getMessage());
+//            logger.error("logger:", e);
+//            logger1.error("logger:", e);
         }
         ;
     }

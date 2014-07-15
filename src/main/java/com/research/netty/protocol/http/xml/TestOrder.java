@@ -25,8 +25,9 @@ import org.jibx.runtime.IMarshallingContext;
 import org.jibx.runtime.IUnmarshallingContext;
 import org.jibx.runtime.JiBXException;
 
-import com.phei.netty.protocol.http.xml.pojo.Order;
-import com.phei.netty.protocol.http.xml.pojo.OrderFactory;
+import com.research.netty.protocol.http.xml.pojo.Order;
+import com.research.netty.protocol.http.xml.pojo.OrderFactory;
+
 
 /**
  * @author Lilinfeng

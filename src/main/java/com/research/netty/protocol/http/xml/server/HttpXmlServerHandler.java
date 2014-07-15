@@ -35,10 +35,11 @@ import io.netty.util.concurrent.GenericFutureListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.phei.netty.protocol.http.xml.codec.HttpXmlRequest;
-import com.phei.netty.protocol.http.xml.codec.HttpXmlResponse;
-import com.phei.netty.protocol.http.xml.pojo.Address;
-import com.phei.netty.protocol.http.xml.pojo.Order;
+import com.research.netty.protocol.http.xml.codec.HttpXmlRequest;
+import com.research.netty.protocol.http.xml.codec.HttpXmlResponse;
+import com.research.netty.protocol.http.xml.pojo.Address;
+import com.research.netty.protocol.http.xml.pojo.Order;
+
 
 /**
  * @author lilinfeng
@@ -59,7 +60,7 @@ public class HttpXmlServerHandler extends
 		order));
 	if (!isKeepAlive(request)) {
 	    future.addListener(new GenericFutureListener<Future<? super Void>>() {
-		public void operationComplete(Future future) throws Exception {
+                public void operationComplete(Future future) throws Exception {
 		    ctx.close();
 		}
 	    });

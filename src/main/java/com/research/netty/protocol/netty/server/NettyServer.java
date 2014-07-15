@@ -28,9 +28,9 @@ import io.netty.handler.timeout.ReadTimeoutHandler;
 
 import java.io.IOException;
 
-import com.phei.netty.protocol.netty.NettyConstant;
-import com.phei.netty.protocol.netty.codec.NettyMessageDecoder;
-import com.phei.netty.protocol.netty.codec.NettyMessageEncoder;
+import com.research.netty.protocol.netty.NettyConstant;
+import com.research.netty.protocol.netty.codec.NettyMessageDecoder;
+import com.research.netty.protocol.netty.codec.NettyMessageEncoder;
 
 /**
  * @author Lilinfeng

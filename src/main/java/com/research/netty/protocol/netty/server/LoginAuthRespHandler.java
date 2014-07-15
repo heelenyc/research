@@ -24,9 +24,9 @@ import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.phei.netty.protocol.netty.MessageType;
-import com.phei.netty.protocol.netty.struct.Header;
-import com.phei.netty.protocol.netty.struct.NettyMessage;
+import com.research.netty.protocol.netty.MessageType;
+import com.research.netty.protocol.netty.struct.Header;
+import com.research.netty.protocol.netty.struct.NettyMessage;
 
 /**
  * @author Lilinfeng
