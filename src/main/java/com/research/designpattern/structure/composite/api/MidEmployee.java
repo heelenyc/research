@@ -9,7 +9,7 @@ public abstract class MidEmployee extends Employee {
 		super(name);
 	}
 
-	private List<Employee> subList = new ArrayList<>();
+	private List<Employee> subList = new ArrayList<Employee>();
 
 	public Employee add(Employee e){
 		subList.add(e);
