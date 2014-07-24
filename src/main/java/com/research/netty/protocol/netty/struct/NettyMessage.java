@@ -30,7 +30,7 @@ public final class NettyMessage {
      * @return the header
      */
     public final Header getHeader() {
-	return header;
+        return header;
     }
 
     /**
@@ -38,14 +38,14 @@ public final class NettyMessage {
      *            the header to set
      */
     public final void setHeader(Header header) {
-	this.header = header;
+        this.header = header;
     }
 
     /**
      * @return the body
      */
     public final Object getBody() {
-	return body;
+        return body;
     }
 
     /**
@@ -53,7 +53,7 @@ public final class NettyMessage {
      *            the body to set
      */
     public final void setBody(Object body) {
-	this.body = body;
+        this.body = body;
     }
 
     /*
@@ -63,6 +63,6 @@ public final class NettyMessage {
      */
     @Override
     public String toString() {
-	return "NettyMessage [header=" + header + "]";
+        return "NettyMessage [header=" + header + "]";
     }
 }
