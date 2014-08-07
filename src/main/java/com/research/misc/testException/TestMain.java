@@ -1,5 +1,7 @@
 package com.research.misc.testException;
 
+import java.util.concurrent.TimeoutException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.slf4j.Logger;
@@ -33,7 +35,7 @@ public class TestMain {
             new TestMain().test();
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            System.out.println(e.getClass().getSimpleName());
 //            logger.error("logger:", e);
 //            logger1.error("logger:", e);
         }
@@ -41,9 +43,10 @@ public class TestMain {
     }
 
     private void test() throws Exception {
-        Exception ex = new NullPointerException("something is null!");
-        ex.initCause(new Exception("i am not happy!"));
-        ex.addSuppressed(new Exception("i am not happy too!"));
+        Exception ex = new TimeoutException();
+        ex.initCause(new Exception("i am int cause"));
+        ex.addSuppressed(new Exception("i am suppered 1"));
+        ex.addSuppressed(new Exception("i am suppered 2"));
         throw ex;
     }
     

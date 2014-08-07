@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -25,6 +26,7 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.HttpResponseException;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -47,6 +49,16 @@ public final class HttpClientUtil {
     private static Log logger = LogFactory.getLog(HttpClientUtil.class);
     private static volatile HttpClient httpClient = null;
 
+    public static void main(String[] args) throws InterruptedException {
+        while (true) {
+            System.out.println(HttpClientUtil.getUrlStatusCode("http://220.181.111.86/"));
+            Thread.sleep(2000);
+            // httpClient.getConnectionManager().closeIdleConnections(2,
+            // TimeUnit.SECONDS);
+            // httpClient.getConnectionManager().closeExpiredConnections();
+        }
+    }
+
     /**
      * Constructor
      */
@@ -56,16 +68,22 @@ public final class HttpClientUtil {
     /**
      * Download data
      * 
-     * @param url url
+     * @param url
+     *            url
      * @return bytes data
      */
     public static byte[] downloadData(String url) {
+        HttpGet httpGet = null;
         try {
-            HttpGet httpGet = new HttpGet(url);
+            httpGet = new HttpGet(url);
             HttpResponse response = getHttpClient().execute(httpGet);
             return responseToByte(response);
         } catch (Exception e) {
             logger.error("Send Get request to url faild, url: " + url, e);
+        } finally {
+            if (httpGet != null) {
+                httpGet.abort();
+            }
         }
         return null;
     }
@@ -73,13 +91,54 @@ public final class HttpClientUtil {
     /**
      * Send get to URL.
      * 
-     * @param url url
+     * @param url
+     *            url
      * @return result content
      */
     public static String sendGet(String url) {
+        HttpGet httpGet = null;
         try {
-            HttpGet httpGet = new HttpGet(url);
+            httpGet = new HttpGet(url);
             HttpResponse response = getHttpClient().execute(httpGet);
+            return responseToString(response);
+        } catch (Exception e) {
+            logger.error("Send Get request to url faild, url: " + url, e);
+        } finally {
+            if (httpGet != null) {
+                httpGet.abort();
+            }
+        }
+        return null;
+    }
+
+    public static int getUrlStatusCode(String url) {
+        HttpGet httpGet = null;
+        try {
+            httpGet = new HttpGet(url);
+            HttpResponse response = getHttpClient().execute(httpGet);
+            int statusCode = response.getStatusLine().getStatusCode();
+            return statusCode;
+        } catch (Exception e) {
+            logger.error("Send Get request to url faild, url: " + url, e);
+            return -1;
+        } finally {
+            if (httpGet != null) {
+                httpGet.abort();
+            }
+        }
+    }
+
+    /**
+     * Send delete to URL.
+     * 
+     * @param url
+     *            url
+     * @return result content
+     */
+    public static String sendDelete(String url) {
+        try {
+            HttpDelete httpDelete = new HttpDelete(url);
+            HttpResponse response = getHttpClient().execute(httpDelete);
             return responseToString(response);
         } catch (Exception e) {
             logger.error("Send Get request to url faild, url: " + url, e);
@@ -90,21 +149,27 @@ public final class HttpClientUtil {
     /**
      * 带有用户名和密码的GET
      * 
-     * @param url 访问的地址
-     * @param userName 校验用户名
-     * @param password 校验密码
+     * @param url
+     *            访问的地址
+     * @param userName
+     *            校验用户名
+     * @param password
+     *            校验密码
      * @return String
      */
     public static String sendGetWithAuthor(String url, String userName, String password) {
         HttpGet httpGet = new HttpGet(url);
         try {
             DefaultHttpClient defaultHttpClient = (DefaultHttpClient) getHttpClient();
-            defaultHttpClient.getCredentialsProvider().setCredentials(AuthScope.ANY,
-                    new UsernamePasswordCredentials(userName, password));
+            defaultHttpClient.getCredentialsProvider().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(userName, password));
             HttpResponse response = defaultHttpClient.execute(httpGet);
             return responseToString(response);
         } catch (Exception e) {
             logger.error("Send Get request to url faild, url: " + url, e);
+        } finally {
+            if (httpGet != null) {
+                httpGet.abort();
+            }
         }
         return null;
     }
@@ -112,10 +177,13 @@ public final class HttpClientUtil {
     /**
      * Send post to URL with parameters by given encoding.
      * 
-     * @param url url
-     * @param parameterMap parameterMap
+     * @param url
+     *            url
+     * @param parameterMap
+     *            parameterMap
      * @return result content
-     * @throws Exception Exception
+     * @throws Exception
+     *             Exception
      */
     public static String sendPost(String url, Map<String, String> parameterMap) throws Exception {
         return sendPost(url, parameterMap, null, "UTF-8");
@@ -124,11 +192,15 @@ public final class HttpClientUtil {
     /**
      * Send post to URL with parameters by given encoding.
      * 
-     * @param url url
-     * @param parameterMap parameterMap
-     * @param encoding encoding
+     * @param url
+     *            url
+     * @param parameterMap
+     *            parameterMap
+     * @param encoding
+     *            encoding
      * @return result content
-     * @throws Exception Exception
+     * @throws Exception
+     *             Exception
      */
     public static String sendPost(String url, Map<String, String> parameterMap, String encoding) throws Exception {
         return sendPost(url, parameterMap, null, encoding);
@@ -137,15 +209,19 @@ public final class HttpClientUtil {
     /**
      * Send post to URL with parameters by given encoding.
      * 
-     * @param url url
-     * @param parameterMap parameterMap
-     * @param headerMap headerMap
-     * @param encoding encoding
+     * @param url
+     *            url
+     * @param parameterMap
+     *            parameterMap
+     * @param headerMap
+     *            headerMap
+     * @param encoding
+     *            encoding
      * @return result content
-     * @throws Exception Exception
+     * @throws Exception
+     *             Exception
      */
-    public static String sendPost(String url, Map<String, String> parameterMap, Map<String, String> headerMap,
-            String encoding) throws Exception {
+    public static String sendPost(String url, Map<String, String> parameterMap, Map<String, String> headerMap, String encoding) throws Exception {
         StringEntity entity = null;
 
         if (parameterMap != null && !parameterMap.isEmpty()) {
@@ -169,10 +245,13 @@ public final class HttpClientUtil {
     /**
      * Send post to URL with parameters by given encoding.
      * 
-     * @param url url
-     * @param parameterMap parameterMap
+     * @param url
+     *            url
+     * @param parameterMap
+     *            parameterMap
      * @return result content
-     * @throws Exception Exception
+     * @throws Exception
+     *             Exception
      */
     public static String sendPostWithMultipart(String url, Map<String, ContentBody> parameterMap) throws Exception {
         MultipartEntity entity = null;
@@ -185,19 +264,27 @@ public final class HttpClientUtil {
         return sendPostWithEntity(url, entity, null);
     }
 
-    private static String sendPostWithEntity(String url, HttpEntity entity, Map<String, String> headerMap)
-            throws Exception {
-        HttpPost httpPost = new HttpPost(url);
-        if (entity != null) {
-            httpPost.setEntity(entity);
-        }
-        if (headerMap != null && !headerMap.isEmpty()) {
-            for (Entry<String, String> entry : headerMap.entrySet()) {
-                httpPost.setHeader(entry.getKey(), entry.getValue());
+    private static String sendPostWithEntity(String url, HttpEntity entity, Map<String, String> headerMap) throws Exception {
+        HttpPost httpPost = null;
+        try {
+            httpPost = new HttpPost(url);
+            if (entity != null) {
+                httpPost.setEntity(entity);
+            }
+            if (headerMap != null && !headerMap.isEmpty()) {
+                for (Entry<String, String> entry : headerMap.entrySet()) {
+                    httpPost.setHeader(entry.getKey(), entry.getValue());
+                }
+            }
+            HttpResponse response = getHttpClient().execute(httpPost);
+            return responseToString(response);
+        } catch (Exception e) {
+            return null;
+        } finally {
+            if (httpPost != null) {
+                httpPost.abort();
             }
         }
-        HttpResponse response = getHttpClient().execute(httpPost);
-        return responseToString(response);
     }
 
     private static String responseToString(HttpResponse response) throws Exception {
@@ -223,22 +310,33 @@ public final class HttpClientUtil {
             EntityUtils.consume(response.getEntity());
             throw new HttpResponseException(statusLine.getStatusCode(), statusLine.getReasonPhrase());
         } else {
-        	/*
-            if (logger.isDebugEnabled()) {
-                logger.debug(response);
-            }*/
+            /*
+             * if (logger.isDebugEnabled()) { logger.debug(response); }
+             */
             return response.getEntity();
         }
     }
 
     /**
-     * When HttpClient instance is no longer needed, shut down the connection manager to ensure immediate deallocation
-     * of all system resources
+     * When HttpClient instance is no longer needed, shut down the connection
+     * manager to ensure immediate deallocation of all system resources
      */
     public static void shutdown() {
         if (httpClient != null) {
             httpClient.getConnectionManager().shutdown();
             httpClient = null;
+        }
+    }
+
+    /**
+     * Closes all expired connections in the pool. Open connections in the pool
+     * that have not been used for the timespan defined when the connection was
+     * released will be closed. Currently allocated connections are not subject
+     * to this method. Times will be checked with milliseconds precision.
+     */
+    public static void closeExpiredConnections() {
+        if (httpClient != null) {
+            httpClient.getConnectionManager().closeExpiredConnections();
         }
     }
 
@@ -254,6 +352,8 @@ public final class HttpClientUtil {
             connectionManager.setMaxTotal(500); // 一共500个连接
             DefaultHttpClient defaultHttpClient = new DefaultHttpClient(connectionManager);
             HttpConnectionParams.setConnectionTimeout(defaultHttpClient.getParams(), 5000); // 5秒超时
+            HttpConnectionParams.setSoTimeout(defaultHttpClient.getParams(), 5000);
+            HttpConnectionParams.setTcpNoDelay(defaultHttpClient.getParams(), true);
 
             // 增加gzip支持
             defaultHttpClient.addRequestInterceptor(new AcceptEncodingRequestInterceptor());
@@ -308,4 +408,37 @@ public final class HttpClientUtil {
         }
     }
 
+    public static Map<String, String> getUrlParameterMap(String url) {
+        Map<String, String> urlParameterMap = new HashMap<String, String>();
+        String urlParameters = getUrlParameters(url);
+        if (urlParameters == null)
+            return urlParameterMap;
+        String[] arrSplit = null;
+        arrSplit = urlParameters.split("\\&");
+        for (String strSplit : arrSplit) {
+            String[] arrSplitEqual = null;
+            arrSplitEqual = strSplit.split("\\=");
+            if (arrSplitEqual.length > 1)
+                urlParameterMap.put(arrSplitEqual[0], arrSplitEqual[1]);
+            else {
+                if (arrSplitEqual[0] != "")
+                    urlParameterMap.put(arrSplitEqual[0], "");
+            }
+        }
+        return urlParameterMap;
+    }
+
+    public static String getBaseUrl(String url) {
+        String baseUrl = null;
+        if (url.length() > 0)
+            baseUrl = url.trim().split("\\?").length > 0 ? url.trim().split("\\?")[0] : "";
+        return baseUrl;
+    }
+
+    private static String getUrlParameters(String url) {
+        String urlParameters = null;
+        if (url.length() > 0)
+            urlParameters = url.trim().split("\\?").length > 1 ? url.trim().split("\\?")[1] : "";
+        return urlParameters;
+    }
 }
