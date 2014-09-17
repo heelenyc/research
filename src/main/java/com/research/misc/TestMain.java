@@ -1,7 +1,9 @@
 package com.research.misc;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -105,9 +107,13 @@ public class TestMain {
 //        String sub = "edsn".split("\\+|\\-|\\*|\\/")[0];
 //        System.out.println(sub);
         
-        String str = "2324.0";
-        System.out.println(str.substring(0,str.indexOf(".")));
+//        String str = "2324.0";
+//        System.out.println(str.substring(0,str.indexOf(".")));
         
+        Calendar cal = Calendar.getInstance();
+        System.out.println(cal.getTime());
+        cal.setTimeInMillis(new Date().getTime() - 1000 * 60 * 60 * 24);
+        System.out.println(cal.getTime());
     }
     
     
@@ -160,6 +166,14 @@ public class TestMain {
     // b = tmp;
     // }
 
+    @SuppressWarnings("unchecked")
+    public <T> T getTest(){
+        return (T)new Object();
+    }
+    
+    public Map<String, String> getMap() {
+        return getTest();
+    }
 }
 
 // class Person {

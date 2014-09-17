@@ -1,5 +1,7 @@
 package com.research.misc.springtest;
 
+import org.springframework.stereotype.Service;
+
 
 /**
  * @author yicheng

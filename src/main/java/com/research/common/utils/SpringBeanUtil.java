@@ -18,7 +18,7 @@ public final class SpringBeanUtil {
 
     private static AbstractApplicationContext getApplicationContext() {
         if (context == null) {
-            context = new ClassPathXmlApplicationContext(new String[]{"conf/applicationContext.xml","conf/applicationContext-quartz.xml"});
+            context = new ClassPathXmlApplicationContext(new String[]{"conf/applicationContext.xml"});
         }
         return context;
     }
