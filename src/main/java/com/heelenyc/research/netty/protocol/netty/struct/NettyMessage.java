@@ -15,11 +15,7 @@
  */
 package com.heelenyc.research.netty.protocol.netty.struct;
 
-/**
- * @author lilinfeng
- * @date 2014年3月14日
- * @version 1.0
- */
+
 public final class NettyMessage {
 
     private Header header;

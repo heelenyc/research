@@ -24,15 +24,11 @@ import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.heelenyc.research.netty.protocol.netty.MessageType;
-import com.heelenyc.research.netty.protocol.netty.struct.Header;
-import com.heelenyc.research.netty.protocol.netty.struct.NettyMessage;
+import com.heelenyc.im.common.MessageType;
+import com.heelenyc.im.common.entity.Header;
+import com.heelenyc.im.common.entity.NettyMessage;
 
-/**
- * @author Lilinfeng
- * @date 2014年3月15日
- * @version 1.0
- */
+
 public class LoginAuthRespHandler extends ChannelHandlerAdapter {
 
     private Map<String, Boolean> nodeCheck = new ConcurrentHashMap<String, Boolean>();

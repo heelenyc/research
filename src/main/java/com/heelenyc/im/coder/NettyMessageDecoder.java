@@ -26,7 +26,6 @@ import java.util.Map;
 import com.heelenyc.research.netty.protocol.netty.struct.Header;
 import com.heelenyc.research.netty.protocol.netty.struct.NettyMessage;
 
-
 public class NettyMessageDecoder extends LengthFieldBasedFrameDecoder {
 
     MarshallingDecoder marshallingDecoder;

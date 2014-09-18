@@ -13,20 +13,11 @@ import io.netty.handler.timeout.ReadTimeoutHandler;
 
 import java.io.IOException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.heelenyc.im.coder.NettyMessageDecoder;
 import com.heelenyc.im.coder.NettyMessageEncoder;
 import com.heelenyc.im.server.handler.HeartBeatRespHandler;
 import com.heelenyc.im.server.handler.LoginAuthRespHandler;
-import com.heelenyc.research.netty.protocol.netty.server.NettyServer;
 
-//import com.research.netty.protocol.netty.NettyConstant;
-//import com.research.netty.protocol.netty.codec.NettyMessageDecoder;
-//import com.research.netty.protocol.netty.codec.NettyMessageEncoder;
-//import com.research.netty.protocol.netty.server.HeartBeatRespHandler;
-//import com.research.netty.protocol.netty.server.LoginAuthRespHandler;
 
 /**
  * @author yicheng
@@ -35,10 +26,8 @@ import com.heelenyc.research.netty.protocol.netty.server.NettyServer;
  */
 public class IMServer {
 
-    private Log logger = LogFactory.getLog(this.getClass());
-
     public static void main(String[] args) throws Exception {
-        new NettyServer().bind();
+        new IMServer().bind();
     }
 
     public void bind() throws Exception {
@@ -46,20 +35,20 @@ public class IMServer {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         ServerBootstrap b = new ServerBootstrap();
-        b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).option(ChannelOption.SO_BACKLOG, ServerConstans.SERVER_BACKLOG).handler(new LoggingHandler(LogLevel.INFO))
+        b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).option(ChannelOption.SO_BACKLOG, ServerConstans.SERVER_NET_CONF_BACKLOG).handler(new LoggingHandler(LogLevel.INFO))
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     public void initChannel(SocketChannel ch) throws IOException {
-                        ch.pipeline().addLast(new NettyMessageDecoder(1024 * 1024, 4, 4));
-                        ch.pipeline().addLast(new NettyMessageEncoder());
-                        ch.pipeline().addLast("readTimeoutHandler", new ReadTimeoutHandler(ServerConstans.READTIMEOUT));
-                        ch.pipeline().addLast(new LoginAuthRespHandler());
+                        ch.pipeline().addLast("MessageDecoder",new NettyMessageDecoder(ServerConstans.MESSAGE_MAX_FRAME_LENGTH, ServerConstans.MESSAGE_LENGTH_FIELD_OFFSET, ServerConstans.MESSAGE_LENGTH_FIELD_LENGTH));
+                        ch.pipeline().addLast("MessageEncoder",new NettyMessageEncoder());
+                        ch.pipeline().addLast("ReadTimeoutHandler", new ReadTimeoutHandler(ServerConstans.SERVER_NET_CONG_READ_TIMEOUT));
+                        ch.pipeline().addLast("ServerLoginAuthHandler",new LoginAuthRespHandler());
                         ch.pipeline().addLast("HeartBeatHandler", new HeartBeatRespHandler());
                     }
                 });
 
         // 绑定端口，同步等待成功
         b.bind(ServerConstans.REMOTEIP, ServerConstans.PORT).sync();
-        logger.info("Netty server start ok : " + (ServerConstans.REMOTEIP + " : " + ServerConstans.PORT));
+        System.out.println("Netty server start ok : " + (ServerConstans.REMOTEIP + " : " + ServerConstans.PORT));
     }
 }

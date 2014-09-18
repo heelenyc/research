@@ -18,9 +18,10 @@ package com.heelenyc.im.server.handler;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 
-import com.heelenyc.research.netty.protocol.netty.MessageType;
-import com.heelenyc.research.netty.protocol.netty.struct.Header;
-import com.heelenyc.research.netty.protocol.netty.struct.NettyMessage;
+import com.heelenyc.im.common.MessageType;
+import com.heelenyc.im.common.entity.Header;
+import com.heelenyc.im.common.entity.NettyMessage;
+
 
 /**
  * @author Lilinfeng

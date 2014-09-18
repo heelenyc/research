@@ -65,6 +65,7 @@ public final class NettyMessageEncoder extends MessageToByteEncoder<NettyMessage
             marshallingEncoder.encode(msg.getBody(), sendBuf);
         } else
             sendBuf.writeInt(0);
+        // 写入消息总长度
         sendBuf.setInt(4, sendBuf.readableBytes() - 8);
     }
 }

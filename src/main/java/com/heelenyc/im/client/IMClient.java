@@ -15,13 +15,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import com.heelenyc.im.client.handler.HeartBeatReqHandler;
+import com.heelenyc.im.client.handler.LoginAuthReqHandler;
 import com.heelenyc.im.coder.NettyMessageDecoder;
 import com.heelenyc.im.coder.NettyMessageEncoder;
 
 /**
  * @author yicheng
  * @since 2014年9月17日
- *
+ * 
  */
 public class IMClient {
     private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
@@ -30,23 +32,25 @@ public class IMClient {
     public void connect(int port, String host) throws Exception {
 
         // 配置客户端NIO线程组
-
         try {
             Bootstrap b = new Bootstrap();
             b.group(group).channel(NioSocketChannel.class).option(ChannelOption.TCP_NODELAY, true).handler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 public void initChannel(SocketChannel ch) throws Exception {
-                    ch.pipeline().addLast(new NettyMessageDecoder(1024 * 1024, 4, 4));
+                    ch.pipeline().addLast("MessageDecoder",new NettyMessageDecoder(ClientConstans.MESSAGE_MAX_FRAME_LENGTH, ClientConstans.MESSAGE_LENGTH_FIELD_OFFSET, ClientConstans.MESSAGE_LENGTH_FIELD_LENGTH));
                     ch.pipeline().addLast("MessageEncoder", new NettyMessageEncoder());
-                    ch.pipeline().addLast("readTimeoutHandler", new ReadTimeoutHandler(50));
+                    ch.pipeline().addLast("ReadTimeoutHandler", new ReadTimeoutHandler(ClientConstans.READTIMEOUT));
                     ch.pipeline().addLast("LoginAuthHandler", new LoginAuthReqHandler());
                     ch.pipeline().addLast("HeartBeatHandler", new HeartBeatReqHandler());
                 }
             });
             // 发起异步连接操作
             ChannelFuture future = b.connect(new InetSocketAddress(host, port), new InetSocketAddress(ClientConstans.LOCALIP, ClientConstans.LOCAL_PORT)).sync();
+            //TimeUnit.SECONDS.sleep(10);
             future.channel().closeFuture().sync();
-        } finally {
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
             // 所有资源释放完成之后，清空资源，再次发起重连操作
             executor.execute(new Runnable() {
                 @Override
