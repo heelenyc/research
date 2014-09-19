@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package com.heelenyc.im.coder;
+package com.heelenyc.im.coder.marshalling;
 
 import io.netty.buffer.ByteBuf;
 import org.jboss.marshalling.ByteInput;

@@ -19,6 +19,7 @@ import com.heelenyc.im.client.handler.HeartBeatReqHandler;
 import com.heelenyc.im.client.handler.LoginAuthReqHandler;
 import com.heelenyc.im.coder.NettyMessageDecoder;
 import com.heelenyc.im.coder.NettyMessageEncoder;
+import com.heelenyc.im.common.Constans;
 
 /**
  * @author yicheng
@@ -37,20 +38,22 @@ public class IMClient {
             b.group(group).channel(NioSocketChannel.class).option(ChannelOption.TCP_NODELAY, true).handler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 public void initChannel(SocketChannel ch) throws Exception {
-                    ch.pipeline().addLast("MessageDecoder",new NettyMessageDecoder(ClientConstans.MESSAGE_MAX_FRAME_LENGTH, ClientConstans.MESSAGE_LENGTH_FIELD_OFFSET, ClientConstans.MESSAGE_LENGTH_FIELD_LENGTH));
+                    ch.pipeline().addLast("MessageDecoder",
+                            new NettyMessageDecoder(Constans.MESSAGE_MAX_FRAME_LENGTH, Constans.MESSAGE_LENGTH_FIELD_OFFSET, Constans.MESSAGE_LENGTH_FIELD_LENGTH));
                     ch.pipeline().addLast("MessageEncoder", new NettyMessageEncoder());
-                    ch.pipeline().addLast("ReadTimeoutHandler", new ReadTimeoutHandler(ClientConstans.READTIMEOUT));
-                    ch.pipeline().addLast("LoginAuthHandler", new LoginAuthReqHandler());
+                    ch.pipeline().addLast("ReadTimeoutHandler", new ReadTimeoutHandler(Constans.NET_CONF_READ_TIMEOUT));
+                    ch.pipeline().addLast("ClientLoginAuthHandler", new LoginAuthReqHandler());
                     ch.pipeline().addLast("HeartBeatHandler", new HeartBeatReqHandler());
                 }
             });
             // 发起异步连接操作
-            ChannelFuture future = b.connect(new InetSocketAddress(host, port), new InetSocketAddress(ClientConstans.LOCALIP, ClientConstans.LOCAL_PORT)).sync();
-            //TimeUnit.SECONDS.sleep(10);
+            ChannelFuture future = b.connect(new InetSocketAddress(host, port), new InetSocketAddress(Constans.LOCAL_IP, Constans.LOCAL_PORT));
+            future.sync();
+            // TimeUnit.SECONDS.sleep(10);
             future.channel().closeFuture().sync();
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             // 所有资源释放完成之后，清空资源，再次发起重连操作
             executor.execute(new Runnable() {
                 @Override
@@ -58,7 +61,7 @@ public class IMClient {
                     try {
                         TimeUnit.SECONDS.sleep(1);
                         try {
-                            connect(ClientConstans.PORT, ClientConstans.REMOTEIP);// 发起重连操作
+                            connect(Constans.PORT, Constans.REMOTEIP);// 发起重连操作
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -75,6 +78,6 @@ public class IMClient {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        new IMClient().connect(ClientConstans.PORT, ClientConstans.REMOTEIP);
+        new IMClient().connect(Constans.PORT, Constans.REMOTEIP);
     }
 }

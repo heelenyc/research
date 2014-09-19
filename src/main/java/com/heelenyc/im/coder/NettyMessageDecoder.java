@@ -23,16 +23,19 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.heelenyc.im.coder.api.Decoder;
+import com.heelenyc.im.coder.hessian.HessianDecoder;
 import com.heelenyc.research.netty.protocol.netty.struct.Header;
 import com.heelenyc.research.netty.protocol.netty.struct.NettyMessage;
 
 public class NettyMessageDecoder extends LengthFieldBasedFrameDecoder {
 
-    MarshallingDecoder marshallingDecoder;
+    private Decoder decoder;
 
     public NettyMessageDecoder(int maxFrameLength, int lengthFieldOffset, int lengthFieldLength) throws IOException {
         super(maxFrameLength, lengthFieldOffset, lengthFieldLength);
-        marshallingDecoder = new MarshallingDecoder();
+        // get a decoder impl
+        decoder = new HessianDecoder();
     }
 
     @Override
@@ -61,14 +64,14 @@ public class NettyMessageDecoder extends LengthFieldBasedFrameDecoder {
                 keyArray = new byte[keySize];
                 frame.readBytes(keyArray);
                 key = new String(keyArray, "UTF-8");
-                attch.put(key, marshallingDecoder.decode(frame));
+                attch.put(key, decoder.decode(frame));
             }
             keyArray = null;
             key = null;
             header.setAttachment(attch);
         }
         if (frame.readableBytes() > 4) {
-            message.setBody(marshallingDecoder.decode(frame));
+            message.setBody(decoder.decode(frame));
         }
         message.setHeader(header);
         return message;

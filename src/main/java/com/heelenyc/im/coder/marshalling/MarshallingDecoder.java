@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.heelenyc.im.coder;
+package com.heelenyc.im.coder.marshalling;
 
 import io.netty.buffer.ByteBuf;
 
@@ -23,12 +23,14 @@ import java.io.StreamCorruptedException;
 import org.jboss.marshalling.ByteInput;
 import org.jboss.marshalling.Unmarshaller;
 
+import com.heelenyc.im.coder.api.Decoder;
+
 /**
  * @author Lilinfeng
  * @date 2014年3月14日
  * @version 1.0
  */
-public class MarshallingDecoder {
+public class MarshallingDecoder implements Decoder {
 
     private final Unmarshaller unmarshaller;
 
@@ -44,7 +46,8 @@ public class MarshallingDecoder {
         unmarshaller = MarshallingCodecFactory.buildUnMarshalling();
     }
 
-    protected Object decode(ByteBuf in) throws Exception {
+    @Override
+    public Object decode(ByteBuf in) throws Exception {
         int objectSize = in.readInt();
         ByteBuf buf = in.slice(in.readerIndex(), objectSize);
         ByteInput input = new ChannelBufferByteInput(buf);
@@ -58,4 +61,5 @@ public class MarshallingDecoder {
             unmarshaller.close();
         }
     }
+
 }

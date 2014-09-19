@@ -22,6 +22,8 @@ import io.netty.handler.codec.MessageToByteEncoder;
 import java.io.IOException;
 import java.util.Map;
 
+import com.heelenyc.im.coder.api.Encoder;
+import com.heelenyc.im.coder.hessian.HessianEncoder;
 import com.heelenyc.research.netty.protocol.netty.struct.NettyMessage;
 
 /**
@@ -31,10 +33,11 @@ import com.heelenyc.research.netty.protocol.netty.struct.NettyMessage;
  */
 public final class NettyMessageEncoder extends MessageToByteEncoder<NettyMessage> {
 
-    MarshallingEncoder marshallingEncoder;
+    Encoder encoder;
 
     public NettyMessageEncoder() throws IOException {
-        this.marshallingEncoder = new MarshallingEncoder();
+        // get a encoder impl
+        this.encoder = new HessianEncoder();
     }
 
     @Override
@@ -56,13 +59,13 @@ public final class NettyMessageEncoder extends MessageToByteEncoder<NettyMessage
             sendBuf.writeInt(keyArray.length);
             sendBuf.writeBytes(keyArray);
             value = param.getValue();
-            marshallingEncoder.encode(value, sendBuf);
+            encoder.encode(value, sendBuf);
         }
         key = null;
         keyArray = null;
         value = null;
         if (msg.getBody() != null) {
-            marshallingEncoder.encode(msg.getBody(), sendBuf);
+            encoder.encode(msg.getBody(), sendBuf);
         } else
             sendBuf.writeInt(0);
         // 写入消息总长度
