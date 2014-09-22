@@ -32,8 +32,8 @@ import com.heelenyc.im.common.entity.Message;
 
 public final class MessageEncoder extends MessageToByteEncoder<Message> {
 
-    Encoder encoder;
-    Log logger =LogFactory.getLog(this.getClass());
+    private Encoder encoder;
+    private Log logger =LogFactory.getLog(this.getClass());
 
     public MessageEncoder() throws IOException {
         // get a encoder impl

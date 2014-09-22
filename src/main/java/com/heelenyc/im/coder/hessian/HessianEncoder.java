@@ -1,8 +1,7 @@
 package com.heelenyc.im.coder.hessian;
 
 import io.netty.buffer.ByteBuf;
-
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBufOutputStream;
 
 import com.caucho.hessian.io.Hessian2Output;
 import com.heelenyc.im.coder.api.Encoder;
@@ -13,35 +12,37 @@ import com.heelenyc.im.coder.api.Encoder;
  * 
  */
 public class HessianEncoder implements Encoder {
-    
-    Hessian2Output output;
-    
-    /**
+
+
+	/**
      * 
      */
-    public HessianEncoder() {
-        //output = new Hessian2Output(null);
-    }
+	public HessianEncoder() {
+	}
 
-    @Override
-    public void encode(Object msg, ByteBuf out) throws Exception {
-        // begin position
-        int lengthPos = out.writerIndex();
-        //  hold a 4 byte for the size 
-        out.writeBytes(LENGTH_PLACEHOLDER);
-        // 写入数据实体
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        output = new Hessian2Output(baos);
-        try {
-            output.writeObject(msg);
-            output.flush();
-            out.writeBytes(baos.toByteArray());
-            out.setInt(lengthPos, out.writerIndex() - lengthPos - 4);
-        } finally {
-            if (output != null) {
-                output.close();
-            }
-        }
-    }
+	@Override
+	public void encode(Object msg, ByteBuf out) throws Exception {
+		/*
+		 * int lengthPos = out.writerIndex();
+		 * out.writeBytes(LENGTH_PLACEHOLDER); ByteArrayOutputStream baos = new
+		 * ByteArrayOutputStream(); output = new Hessian2Output(baos); try {
+		 * output.writeObject(msg); output.flush();
+		 * out.writeBytes(baos.toByteArray()); out.setInt(lengthPos,
+		 * out.writerIndex() - lengthPos - 4); } finally { if (output != null) {
+		 * output.close(); } }
+		 */
+
+		// begin position
+		int lengthPos = out.writerIndex();
+		// hold a 4 byte for the size
+		out.writeBytes(LENGTH_PLACEHOLDER);
+		// 写入数据实体
+		Hessian2Output output = new Hessian2Output(new ByteBufOutputStream(out));
+		output.writeObject(msg);
+		output.flushBuffer();
+		out.setInt(lengthPos, out.writerIndex() - lengthPos - 4);
+		
+		output.close();
+	}
 
 }
