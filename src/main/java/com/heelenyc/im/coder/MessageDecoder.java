@@ -1,18 +1,3 @@
-/*
- * Copyright 2013-2018 Lilinfeng.
- *  
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *  
- *      http://www.apache.org/licenses/LICENSE-2.0
- *  
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.heelenyc.im.coder;
 
 import io.netty.buffer.ByteBuf;
@@ -23,16 +8,20 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.heelenyc.im.coder.api.Decoder;
 import com.heelenyc.im.coder.hessian.HessianDecoder;
-import com.heelenyc.research.netty.protocol.netty.struct.Header;
-import com.heelenyc.research.netty.protocol.netty.struct.NettyMessage;
+import com.heelenyc.im.common.entity.Header;
+import com.heelenyc.im.common.entity.Message;
 
-public class NettyMessageDecoder extends LengthFieldBasedFrameDecoder {
+public class MessageDecoder extends LengthFieldBasedFrameDecoder {
+    
+    private Log logger = LogFactory.getLog(this.getClass());
 
     private Decoder decoder;
-
-    public NettyMessageDecoder(int maxFrameLength, int lengthFieldOffset, int lengthFieldLength) throws IOException {
+    public MessageDecoder(int maxFrameLength, int lengthFieldOffset, int lengthFieldLength) throws IOException {
         super(maxFrameLength, lengthFieldOffset, lengthFieldLength);
         // get a decoder impl
         decoder = new HessianDecoder();
@@ -45,7 +34,7 @@ public class NettyMessageDecoder extends LengthFieldBasedFrameDecoder {
             return null;
         }
 
-        NettyMessage message = new NettyMessage();
+        Message message = new Message();
         Header header = new Header();
         header.setCrcCode(frame.readInt());
         header.setLength(frame.readInt());
@@ -74,6 +63,7 @@ public class NettyMessageDecoder extends LengthFieldBasedFrameDecoder {
             message.setBody(decoder.decode(frame));
         }
         message.setHeader(header);
+        logger.debug("decode : " + message);
         return message;
     }
 }

@@ -22,28 +22,29 @@ import io.netty.handler.codec.MessageToByteEncoder;
 import java.io.IOException;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.heelenyc.im.coder.api.Encoder;
 import com.heelenyc.im.coder.hessian.HessianEncoder;
-import com.heelenyc.research.netty.protocol.netty.struct.NettyMessage;
+import com.heelenyc.im.common.entity.Message;
 
-/**
- * @author Lilinfeng
- * @date 2014年3月14日
- * @version 1.0
- */
-public final class NettyMessageEncoder extends MessageToByteEncoder<NettyMessage> {
+
+public final class MessageEncoder extends MessageToByteEncoder<Message> {
 
     Encoder encoder;
+    Log logger =LogFactory.getLog(this.getClass());
 
-    public NettyMessageEncoder() throws IOException {
+    public MessageEncoder() throws IOException {
         // get a encoder impl
         this.encoder = new HessianEncoder();
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, NettyMessage msg, ByteBuf sendBuf) throws Exception {
-        if (msg == null || msg.getHeader() == null)
+    protected void encode(ChannelHandlerContext ctx, Message msg, ByteBuf sendBuf) throws Exception {
+        if (msg == null || msg.getHeader() == null)  
             throw new Exception("The encode message is null");
+        
         sendBuf.writeInt((msg.getHeader().getCrcCode()));
         sendBuf.writeInt((msg.getHeader().getLength()));
         sendBuf.writeLong((msg.getHeader().getSessionID()));
@@ -70,5 +71,7 @@ public final class NettyMessageEncoder extends MessageToByteEncoder<NettyMessage
             sendBuf.writeInt(0);
         // 写入消息总长度
         sendBuf.setInt(4, sendBuf.readableBytes() - 8);
+        
+        logger.debug("encode :" + msg);
     }
 }

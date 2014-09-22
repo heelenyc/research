@@ -1,7 +1,8 @@
 package com.heelenyc.im.coder.hessian;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufOutputStream;
+
+import java.io.ByteArrayOutputStream;
 
 import com.caucho.hessian.io.Hessian2Output;
 import com.heelenyc.im.coder.api.Encoder;
@@ -19,7 +20,7 @@ public class HessianEncoder implements Encoder {
      * 
      */
     public HessianEncoder() {
-        output = new Hessian2Output(null);
+        //output = new Hessian2Output(null);
     }
 
     @Override
@@ -28,10 +29,19 @@ public class HessianEncoder implements Encoder {
         int lengthPos = out.writerIndex();
         //  hold a 4 byte for the size 
         out.writeBytes(LENGTH_PLACEHOLDER);
-        output.init(new ByteBufOutputStream(out));
-        output.writeObject(msg);
-        // write the size
-        out.setInt(lengthPos, out.writerIndex() - lengthPos - 4);
+        // 写入数据实体
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        output = new Hessian2Output(baos);
+        try {
+            output.writeObject(msg);
+            output.flush();
+            out.writeBytes(baos.toByteArray());
+            out.setInt(lengthPos, out.writerIndex() - lengthPos - 4);
+        } finally {
+            if (output != null) {
+                output.close();
+            }
+        }
     }
 
 }

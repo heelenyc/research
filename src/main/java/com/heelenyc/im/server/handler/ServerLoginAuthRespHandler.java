@@ -24,16 +24,21 @@ import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.heelenyc.im.common.MessageType;
 import com.heelenyc.im.common.entity.Header;
-import com.heelenyc.im.common.entity.NettyMessage;
+import com.heelenyc.im.common.entity.Message;
 
 
-public class LoginAuthRespHandler extends ChannelHandlerAdapter {
+public class ServerLoginAuthRespHandler extends ChannelHandlerAdapter {
+    
+    Log logger = LogFactory.getLog(this.getClass());
 
     private Map<String, Boolean> nodeCheck = new ConcurrentHashMap<String, Boolean>();
     private String[] whitekList = { "127.0.0.1", "192.168.1.104" };
-
+    
     /**
      * Calls {@link ChannelHandlerContext#fireChannelRead(Object)} to forward to
      * the next {@link ChannelHandler} in the {@link ChannelPipeline}.
@@ -42,12 +47,12 @@ public class LoginAuthRespHandler extends ChannelHandlerAdapter {
      */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        NettyMessage message = (NettyMessage) msg;
+        Message message = (Message) msg;
 
         // 如果是握手请求消息，处理，其它消息透传
         if (message.getHeader() != null && message.getHeader().getType() == MessageType.LOGIN_REQ.value()) {
             String nodeIndex = ctx.channel().remoteAddress().toString();
-            NettyMessage loginResp = null;
+            Message loginResp = null;
             // 重复登陆，拒绝
             if (nodeCheck.containsKey(nodeIndex)) {
                 loginResp = buildResponse((byte) -1);
@@ -65,15 +70,15 @@ public class LoginAuthRespHandler extends ChannelHandlerAdapter {
                 if (isOK)
                     nodeCheck.put(nodeIndex, true);
             }
-            System.out.println("The login response is : " + loginResp + " body [" + loginResp.getBody() + "]");
+            logger.info("The login response is : " + loginResp + " body [" + loginResp.getBody() + "]");
             ctx.writeAndFlush(loginResp);
         } else {
             ctx.fireChannelRead(msg);
         }
     }
 
-    private NettyMessage buildResponse(byte result) {
-        NettyMessage message = new NettyMessage();
+    private Message buildResponse(byte result) {
+        Message message = new Message();
         Header header = new Header();
         header.setType(MessageType.LOGIN_RESP.value());
         message.setHeader(header);

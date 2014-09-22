@@ -1,7 +1,6 @@
 package com.heelenyc.im.common.entity;
 
-
-public final class NettyMessage {
+public final class Message {
 
     private Header header;
 

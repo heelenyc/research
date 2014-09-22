@@ -8,13 +8,13 @@ package com.heelenyc.im.common;
 public final class Constans {
 
     public static final int NET_CONF_BACKLOG = 100;
-    public static final int NET_CONF_READ_TIMEOUT = 50;
+    public static final int NET_CONF_READ_TIMEOUT = 600;
     
     
-    public static final String REMOTEIP = "localhost";
+    public static final String REMOTEIP = "127.0.0.1";
     public static final int PORT = 18080;
     public static final int LOCAL_PORT = 12088;
-    public static final String LOCAL_IP = "localhost";
+    public static final String LOCAL_IP = "127.0.0.1";
     
     /**
      * 

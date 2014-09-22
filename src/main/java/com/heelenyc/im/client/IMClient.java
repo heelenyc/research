@@ -15,10 +15,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import com.heelenyc.im.client.handler.HeartBeatReqHandler;
-import com.heelenyc.im.client.handler.LoginAuthReqHandler;
-import com.heelenyc.im.coder.NettyMessageDecoder;
-import com.heelenyc.im.coder.NettyMessageEncoder;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.heelenyc.im.client.handler.ClientHeartBeatReqHandler;
+import com.heelenyc.im.client.handler.ClientLoginAuthReqHandler;
+import com.heelenyc.im.coder.MessageDecoder;
+import com.heelenyc.im.coder.MessageEncoder;
 import com.heelenyc.im.common.Constans;
 
 /**
@@ -27,6 +30,9 @@ import com.heelenyc.im.common.Constans;
  * 
  */
 public class IMClient {
+    
+    private Log logger = LogFactory.getLog(this.getClass());
+    
     private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
     EventLoopGroup group = new NioEventLoopGroup();
 
@@ -39,11 +45,11 @@ public class IMClient {
                 @Override
                 public void initChannel(SocketChannel ch) throws Exception {
                     ch.pipeline().addLast("MessageDecoder",
-                            new NettyMessageDecoder(Constans.MESSAGE_MAX_FRAME_LENGTH, Constans.MESSAGE_LENGTH_FIELD_OFFSET, Constans.MESSAGE_LENGTH_FIELD_LENGTH));
-                    ch.pipeline().addLast("MessageEncoder", new NettyMessageEncoder());
+                            new MessageDecoder(Constans.MESSAGE_MAX_FRAME_LENGTH, Constans.MESSAGE_LENGTH_FIELD_OFFSET, Constans.MESSAGE_LENGTH_FIELD_LENGTH));
+                    ch.pipeline().addLast("MessageEncoder", new MessageEncoder());
                     ch.pipeline().addLast("ReadTimeoutHandler", new ReadTimeoutHandler(Constans.NET_CONF_READ_TIMEOUT));
-                    ch.pipeline().addLast("ClientLoginAuthHandler", new LoginAuthReqHandler());
-                    ch.pipeline().addLast("HeartBeatHandler", new HeartBeatReqHandler());
+                    ch.pipeline().addLast("ClientLoginAuthHandler", new ClientLoginAuthReqHandler());
+                    ch.pipeline().addLast("HeartBeatHandler", new ClientHeartBeatReqHandler());
                 }
             });
             // 发起异步连接操作
@@ -51,6 +57,7 @@ public class IMClient {
             future.sync();
             // TimeUnit.SECONDS.sleep(10);
             future.channel().closeFuture().sync();
+            logger.info("client closed!");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

@@ -13,11 +13,14 @@ import io.netty.handler.timeout.ReadTimeoutHandler;
 
 import java.io.IOException;
 
-import com.heelenyc.im.coder.NettyMessageDecoder;
-import com.heelenyc.im.coder.NettyMessageEncoder;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.heelenyc.im.coder.MessageDecoder;
+import com.heelenyc.im.coder.MessageEncoder;
 import com.heelenyc.im.common.Constans;
-import com.heelenyc.im.server.handler.HeartBeatRespHandler;
-import com.heelenyc.im.server.handler.LoginAuthRespHandler;
+import com.heelenyc.im.server.handler.ServerHeartBeatRespHandler;
+import com.heelenyc.im.server.handler.ServerLoginAuthRespHandler;
 
 /**
  * @author yicheng
@@ -25,6 +28,8 @@ import com.heelenyc.im.server.handler.LoginAuthRespHandler;
  * 
  */
 public class IMServer {
+    
+    Log logger = LogFactory.getLog(this.getClass());
 
     public static void main(String[] args) throws Exception {
         new IMServer().bind();
@@ -40,17 +45,17 @@ public class IMServer {
                     @Override
                     public void initChannel(SocketChannel ch) throws IOException {
                         ch.pipeline().addLast("MessageDecoder",
-                                new NettyMessageDecoder(Constans.MESSAGE_MAX_FRAME_LENGTH, Constans.MESSAGE_LENGTH_FIELD_OFFSET, Constans.MESSAGE_LENGTH_FIELD_LENGTH));
-                        ch.pipeline().addLast("MessageEncoder", new NettyMessageEncoder());
+                                new MessageDecoder(Constans.MESSAGE_MAX_FRAME_LENGTH, Constans.MESSAGE_LENGTH_FIELD_OFFSET, Constans.MESSAGE_LENGTH_FIELD_LENGTH));
+                        ch.pipeline().addLast("MessageEncoder", new MessageEncoder());
                         ch.pipeline().addLast("ReadTimeoutHandler", new ReadTimeoutHandler(Constans.NET_CONF_READ_TIMEOUT));
-                        ch.pipeline().addLast("ServerLoginAuthHandler", new LoginAuthRespHandler());
-                        ch.pipeline().addLast("HeartBeatHandler", new HeartBeatRespHandler());
+                        ch.pipeline().addLast("ServerLoginAuthHandler", new ServerLoginAuthRespHandler());
+                        ch.pipeline().addLast("HeartBeatHandler", new ServerHeartBeatRespHandler());
                     }
                 });
 
         // 绑定端口，同步等待成功
         b.bind(Constans.REMOTEIP, Constans.PORT).sync();
         // b.bind(ServerConstans.PORT).sync();
-        System.out.println("Netty server start ok : " + (Constans.REMOTEIP + " : " + Constans.PORT));
+        logger.info("Netty server start ok : " + (Constans.REMOTEIP + " : " + Constans.PORT));
     }
 }
