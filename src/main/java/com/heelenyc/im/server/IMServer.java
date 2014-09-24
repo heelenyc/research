@@ -1,6 +1,7 @@
 package com.heelenyc.im.server;
 
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -28,7 +29,7 @@ import com.heelenyc.im.server.handler.ServerLoginAuthRespHandler;
  * 
  */
 public class IMServer {
-    
+
     Log logger = LogFactory.getLog(this.getClass());
 
     public static void main(String[] args) throws Exception {
@@ -44,8 +45,7 @@ public class IMServer {
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     public void initChannel(SocketChannel ch) throws IOException {
-                        ch.pipeline().addLast("MessageDecoder",
-                                new MessageDecoder(Constans.MESSAGE_MAX_FRAME_LENGTH, Constans.MESSAGE_LENGTH_FIELD_OFFSET, Constans.MESSAGE_LENGTH_FIELD_LENGTH));
+                        ch.pipeline().addLast("MessageDecoder", new MessageDecoder(Constans.MESSAGE_MAX_FRAME_LENGTH, Constans.MESSAGE_LENGTH_FIELD_OFFSET, Constans.MESSAGE_LENGTH_FIELD_LENGTH));
                         ch.pipeline().addLast("MessageEncoder", new MessageEncoder());
                         ch.pipeline().addLast("ReadTimeoutHandler", new ReadTimeoutHandler(Constans.NET_CONF_READ_TIMEOUT));
                         ch.pipeline().addLast("ServerLoginAuthHandler", new ServerLoginAuthRespHandler());
@@ -54,7 +54,8 @@ public class IMServer {
                 });
 
         // 绑定端口，同步等待成功
-        b.bind(Constans.REMOTEIP, Constans.PORT).sync();
+        ChannelFuture future = b.bind(Constans.REMOTEIP, Constans.PORT);
+        future.sync();
         // b.bind(ServerConstans.PORT).sync();
         logger.info("Netty server start ok : " + (Constans.REMOTEIP + " : " + Constans.PORT));
     }
