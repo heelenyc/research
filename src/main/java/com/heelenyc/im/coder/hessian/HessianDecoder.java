@@ -13,7 +13,6 @@ import com.heelenyc.im.coder.api.Decoder;
  */
 public class HessianDecoder implements Decoder {
 
-
     /**
      * 
      */
@@ -34,7 +33,7 @@ public class HessianDecoder implements Decoder {
 
         // read size
         int objectSize = in.readInt();
-        Hessian2Input input = new Hessian2Input(new ByteBufInputStream(in,objectSize));
+        Hessian2Input input = new Hessian2Input(new ByteBufInputStream(in, objectSize));
         Object obj = input.readObject();
         input.close();
         return obj;

@@ -15,36 +15,27 @@
  */
 package com.heelenyc.im.client.handler;
 
-import io.netty.channel.ChannelHandler;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPipeline;
 
-import com.heelenyc.im.common.MessageType;
 import com.heelenyc.im.common.entity.Header;
 import com.heelenyc.im.common.entity.Message;
+import com.heelenyc.im.common.entity.MessageType;
 
 
 
 public class ClientLoginAuthReqHandler extends ChannelHandlerAdapter {
 
-    /**
-     * Calls {@link ChannelHandlerContext#fireChannelActive()} to forward to the
-     * next {@link ChannelHandler} in the {@link ChannelPipeline}.
-     * 
-     * Sub-classes may override this method to change behavior.
-     */
+    private Log logger = LogFactory.getLog(this.getClass());
+
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         ctx.writeAndFlush(buildLoginReq());
     }
 
-    /**
-     * Calls {@link ChannelHandlerContext#fireChannelRead(Object)} to forward to
-     * the next {@link ChannelHandler} in the {@link ChannelPipeline}.
-     * 
-     * Sub-classes may override this method to change behavior.
-     */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         Message message = (Message) msg;
@@ -56,7 +47,7 @@ public class ClientLoginAuthReqHandler extends ChannelHandlerAdapter {
                 // 握手失败，关闭连接
                 ctx.close();
             } else {
-                System.out.println("Login is ok : " + message);
+                logger.info("Login is ok : " + message);
                 ctx.fireChannelRead(msg);
             }
         } else
@@ -71,6 +62,7 @@ public class ClientLoginAuthReqHandler extends ChannelHandlerAdapter {
         return message;
     }
 
+    @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         ctx.fireExceptionCaught(cause);
     }

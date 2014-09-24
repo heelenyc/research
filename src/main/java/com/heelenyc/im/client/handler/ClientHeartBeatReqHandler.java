@@ -21,11 +21,17 @@ import io.netty.channel.ChannelHandlerContext;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import com.heelenyc.im.common.MessageType;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.heelenyc.im.common.Constans;
 import com.heelenyc.im.common.entity.Header;
 import com.heelenyc.im.common.entity.Message;
+import com.heelenyc.im.common.entity.MessageType;
 
 public class ClientHeartBeatReqHandler extends ChannelHandlerAdapter {
+    
+    private Log logger = LogFactory.getLog(this.getClass());
 
     private volatile ScheduledFuture<?> heartBeat;
 
@@ -34,9 +40,9 @@ public class ClientHeartBeatReqHandler extends ChannelHandlerAdapter {
         Message message = (Message) msg;
         // 握手成功，主动发送心跳消息
         if (message.getHeader() != null && message.getHeader().getType() == MessageType.LOGIN_RESP.value()) {
-            heartBeat = ctx.executor().scheduleAtFixedRate(new ClientHeartBeatReqHandler.HeartBeatTask(ctx), 0, 5000, TimeUnit.MILLISECONDS);
+            heartBeat = ctx.executor().scheduleAtFixedRate(new ClientHeartBeatReqHandler.HeartBeatTask(ctx), 0, Constans.HEARTBEAT_PERIOD_INMS, TimeUnit.MILLISECONDS);
         } else if (message.getHeader() != null && message.getHeader().getType() == MessageType.HEARTBEAT_RESP.value()) {
-            System.out.println("Client receive server heart beat message : ---> " + message);
+            logger.info("Client receive server heart beat message : ---> " + message);
         } else
             ctx.fireChannelRead(msg);
     }
@@ -51,7 +57,7 @@ public class ClientHeartBeatReqHandler extends ChannelHandlerAdapter {
         @Override
         public void run() {
             Message heatBeat = buildHeatBeat();
-            System.out.println("Client send heart beat messsage to server : ---> " + heatBeat);
+            logger.info("Client send heart beat messsage to server : ---> " + heatBeat);
             ctx.writeAndFlush(heatBeat);
         }
 

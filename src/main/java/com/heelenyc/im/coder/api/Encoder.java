@@ -1,5 +1,7 @@
 package com.heelenyc.im.coder.api;
 
+import com.heelenyc.im.common.Constans;
+
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -9,6 +11,6 @@ import io.netty.buffer.ByteBuf;
  */
 public interface Encoder {
     
-    static final byte[] LENGTH_PLACEHOLDER = new byte[4];
+    static final byte[] LENGTH_PLACEHOLDER = new byte[Constans.MESSAGE_LENGTH_FIELD_LENGTH];
     void encode(Object msg, ByteBuf out) throws Exception;
 }

@@ -1,50 +1,30 @@
-/*
- * Copyright 2013-2018 Lilinfeng.
- *  
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *  
- *      http://www.apache.org/licenses/LICENSE-2.0
- *  
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.heelenyc.im.server.handler;
 
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPipeline;
 
 import java.net.InetSocketAddress;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.heelenyc.im.common.MessageType;
+import com.heelenyc.im.common.Constans;
 import com.heelenyc.im.common.entity.Header;
 import com.heelenyc.im.common.entity.Message;
-
+import com.heelenyc.im.common.entity.MessageType;
 
 public class ServerLoginAuthRespHandler extends ChannelHandlerAdapter {
-    
-    Log logger = LogFactory.getLog(this.getClass());
+
+    private Log logger = LogFactory.getLog(this.getClass());
 
     private Map<String, Boolean> nodeCheck = new ConcurrentHashMap<String, Boolean>();
-    private String[] whitekList = { "127.0.0.1", "192.168.1.104" };
-    
-    /**
-     * Calls {@link ChannelHandlerContext#fireChannelRead(Object)} to forward to
-     * the next {@link ChannelHandler} in the {@link ChannelPipeline}.
-     * 
-     * Sub-classes may override this method to change behavior.
-     */
+    private List<String> whitekList = Arrays.asList(Constans.WHITELIST);
+    private List<String> blackList = Arrays.asList(Constans.BLACKLIST);
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         Message message = (Message) msg;
@@ -59,13 +39,7 @@ public class ServerLoginAuthRespHandler extends ChannelHandlerAdapter {
             } else {
                 InetSocketAddress address = (InetSocketAddress) ctx.channel().remoteAddress();
                 String ip = address.getAddress().getHostAddress();
-                boolean isOK = false;
-                for (String WIP : whitekList) {
-                    if (WIP.equals(ip)) {
-                        isOK = true;
-                        break;
-                    }
-                }
+                boolean isOK = IsAllowed(ip);
                 loginResp = isOK ? buildResponse((byte) 0) : buildResponse((byte) -1);
                 if (isOK)
                     nodeCheck.put(nodeIndex, true);
@@ -77,6 +51,30 @@ public class ServerLoginAuthRespHandler extends ChannelHandlerAdapter {
         }
     }
 
+    /**
+     * @param ip
+     * @return
+     */
+    private boolean IsAllowed(String ip) {
+
+        if (Constans.IS_WHITELIST_FIRST) {
+            if (whitekList.contains(ip)) {
+                return true;
+            }
+            if (blackList.contains(ip)) {
+                return false;
+            }
+        } else {
+            if (blackList.contains(ip)) {
+                return false;
+            }
+            if (whitekList.contains(ip)) {
+                return true;
+            }
+        }
+        return Constans.IS_OTHER_ALLOWED;
+    }
+
     private Message buildResponse(byte result) {
         Message message = new Message();
         Header header = new Header();
@@ -86,6 +84,7 @@ public class ServerLoginAuthRespHandler extends ChannelHandlerAdapter {
         return message;
     }
 
+    @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         cause.printStackTrace();
         nodeCheck.remove(ctx.channel().remoteAddress().toString());// 删除缓存

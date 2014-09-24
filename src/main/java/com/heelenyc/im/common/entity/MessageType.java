@@ -1,4 +1,4 @@
-package com.heelenyc.im.common;
+package com.heelenyc.im.common.entity;
 
 public enum MessageType {
 

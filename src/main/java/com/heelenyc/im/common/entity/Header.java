@@ -3,7 +3,6 @@ package com.heelenyc.im.common.entity;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public final class Header {
 
     private int crcCode = 0xabef0101;
@@ -108,11 +107,6 @@ public final class Header {
         this.attachment = attachment;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#toString()
-     */
     @Override
     public String toString() {
         return "Header [crcCode=" + crcCode + ", length=" + length + ", sessionID=" + sessionID + ", type=" + type + ", priority=" + priority + ", attachment=" + attachment + "]";

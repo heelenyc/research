@@ -30,9 +30,9 @@ import com.heelenyc.im.common.Constans;
  * 
  */
 public class IMClient {
-    
+
     private Log logger = LogFactory.getLog(this.getClass());
-    
+
     private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
     EventLoopGroup group = new NioEventLoopGroup();
 
@@ -44,8 +44,7 @@ public class IMClient {
             b.group(group).channel(NioSocketChannel.class).option(ChannelOption.TCP_NODELAY, true).handler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 public void initChannel(SocketChannel ch) throws Exception {
-                    ch.pipeline().addLast("MessageDecoder",
-                            new MessageDecoder(Constans.MESSAGE_MAX_FRAME_LENGTH, Constans.MESSAGE_LENGTH_FIELD_OFFSET, Constans.MESSAGE_LENGTH_FIELD_LENGTH));
+                    ch.pipeline().addLast("MessageDecoder", new MessageDecoder(Constans.MESSAGE_MAX_FRAME_LENGTH, Constans.MESSAGE_LENGTH_FIELD_OFFSET, Constans.MESSAGE_LENGTH_FIELD_LENGTH));
                     ch.pipeline().addLast("MessageEncoder", new MessageEncoder());
                     ch.pipeline().addLast("ReadTimeoutHandler", new ReadTimeoutHandler(Constans.NET_CONF_READ_TIMEOUT));
                     ch.pipeline().addLast("ClientLoginAuthHandler", new ClientLoginAuthReqHandler());
@@ -59,7 +58,7 @@ public class IMClient {
             future.channel().closeFuture().sync();
             logger.info("client closed!");
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e,e);
         } finally {
             // 所有资源释放完成之后，清空资源，再次发起重连操作
             executor.execute(new Runnable() {

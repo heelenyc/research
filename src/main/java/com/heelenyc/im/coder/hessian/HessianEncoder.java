@@ -40,7 +40,8 @@ public class HessianEncoder implements Encoder {
 		Hessian2Output output = new Hessian2Output(new ByteBufOutputStream(out));
 		output.writeObject(msg);
 		output.flushBuffer();
-		out.setInt(lengthPos, out.writerIndex() - lengthPos - 4);
+		// write size
+		out.setInt(lengthPos, out.writerIndex() - lengthPos - LENGTH_PLACEHOLDER.length);
 		
 		output.close();
 	}

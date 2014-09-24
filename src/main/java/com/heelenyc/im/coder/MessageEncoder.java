@@ -27,6 +27,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.heelenyc.im.coder.api.Encoder;
 import com.heelenyc.im.coder.hessian.HessianEncoder;
+import com.heelenyc.im.common.Constans;
 import com.heelenyc.im.common.entity.Message;
 
 
@@ -46,7 +47,7 @@ public final class MessageEncoder extends MessageToByteEncoder<Message> {
             throw new Exception("The encode message is null");
         
         sendBuf.writeInt((msg.getHeader().getCrcCode()));
-        sendBuf.writeInt((msg.getHeader().getLength()));
+        sendBuf.writeInt((msg.getHeader().getLength()));  // 占用空间
         sendBuf.writeLong((msg.getHeader().getSessionID()));
         sendBuf.writeByte((msg.getHeader().getType()));
         sendBuf.writeByte((msg.getHeader().getPriority()));
@@ -55,10 +56,12 @@ public final class MessageEncoder extends MessageToByteEncoder<Message> {
         byte[] keyArray = null;
         Object value = null;
         for (Map.Entry<String, Object> param : msg.getHeader().getAttachment().entrySet()) {
+            // write key
             key = param.getKey();
-            keyArray = key.getBytes("UTF-8");
+            keyArray = key.getBytes(Constans.ATTACHMENT_KEY_CHARACTSET);
             sendBuf.writeInt(keyArray.length);
             sendBuf.writeBytes(keyArray);
+            // write value
             value = param.getValue();
             encoder.encode(value, sendBuf);
         }
@@ -69,9 +72,11 @@ public final class MessageEncoder extends MessageToByteEncoder<Message> {
             encoder.encode(msg.getBody(), sendBuf);
         } else
             sendBuf.writeInt(0);
+        int totalSize = sendBuf.readableBytes() - Constans.MESSAGE_LENGTH_FIELD_OFFSET - Constans.MESSAGE_LENGTH_FIELD_LENGTH;
+        // fix head length field
+        msg.getHeader().setLength(totalSize);
         // 写入消息总长度
-        sendBuf.setInt(4, sendBuf.readableBytes() - 8);
-        
+        sendBuf.setInt(Constans.MESSAGE_LENGTH_FIELD_OFFSET, totalSize);
         logger.debug("encode :" + msg);
     }
 }

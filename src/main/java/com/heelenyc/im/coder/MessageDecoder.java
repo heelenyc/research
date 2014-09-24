@@ -42,23 +42,26 @@ public class MessageDecoder extends LengthFieldBasedFrameDecoder {
         header.setType(frame.readByte());
         header.setPriority(frame.readByte());
 
-        int size = frame.readInt();
+        int size = frame.readInt(); // attachment.size()
         if (size > 0) {
             Map<String, Object> attch = new HashMap<String, Object>(size);
             int keySize = 0;
             byte[] keyArray = null;
             String key = null;
             for (int i = 0; i < size; i++) {
+                // read key
                 keySize = frame.readInt();
                 keyArray = new byte[keySize];
                 frame.readBytes(keyArray);
                 key = new String(keyArray, "UTF-8");
+                // read value
                 attch.put(key, decoder.decode(frame));
             }
             keyArray = null;
             key = null;
             header.setAttachment(attch);
         }
+        // if a body serialized , must be bigger than 4 bytes, decode it, other wise , this message has a null body
         if (frame.readableBytes() > 4) {
             message.setBody(decoder.decode(frame));
         }
