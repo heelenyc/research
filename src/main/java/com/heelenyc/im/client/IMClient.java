@@ -36,7 +36,7 @@ public class IMClient {
     private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
     EventLoopGroup group = new NioEventLoopGroup();
 
-    public void connect(int port, String host) throws Exception {
+    public void connect(final int port, final String host) throws Exception {
 
         // 配置客户端NIO线程组
         try {
@@ -67,7 +67,7 @@ public class IMClient {
                     try {
                         TimeUnit.SECONDS.sleep(1);
                         try {
-                            connect(Constans.PORT, Constans.REMOTEIP);// 发起重连操作
+                            connect(port, host);// 发起重连操作
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

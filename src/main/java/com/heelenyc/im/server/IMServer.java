@@ -1,7 +1,6 @@
 package com.heelenyc.im.server;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -54,9 +53,7 @@ public class IMServer {
                 });
 
         // 绑定端口，同步等待成功
-        ChannelFuture future = b.bind(Constans.REMOTEIP, Constans.PORT);
-        future.sync();
-        // b.bind(ServerConstans.PORT).sync();
+        b.bind(Constans.PORT).sync();
         logger.info("Netty server start ok : " + (Constans.REMOTEIP + " : " + Constans.PORT));
     }
 }
