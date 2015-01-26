@@ -94,7 +94,7 @@ public class ZooKeeperOperator extends AbstractZooKeeper {
 
             String zktest = "ZooKeeper的Java API测试";
             zkoperator.create("/root/child3", zktest.getBytes());
-            log.debug("获取设置的信息：" + new String(zkoperator.getData("/root/child3")));
+            log.info("获取设置的信息：" + new String(zkoperator.getData("/root/child3")));
 
             System.out.println("节点孩子信息:");
             zkoperator.getChild("/root");
