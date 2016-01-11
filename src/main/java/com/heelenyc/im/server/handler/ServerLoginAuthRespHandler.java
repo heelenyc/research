@@ -2,6 +2,7 @@ package com.heelenyc.im.server.handler;
 
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.Attribute;
 
 import java.net.InetSocketAddress;
 import java.util.Arrays;
@@ -28,7 +29,6 @@ public class ServerLoginAuthRespHandler extends ChannelHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         Message message = (Message) msg;
-
         // 如果是握手请求消息，处理，其它消息透传
         if (message.getHeader() != null && message.getHeader().getType() == MessageType.LOGIN_REQ.value()) {
             String nodeIndex = ctx.channel().remoteAddress().toString();

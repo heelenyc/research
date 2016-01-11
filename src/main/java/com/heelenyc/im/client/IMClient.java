@@ -41,14 +41,18 @@ public class IMClient {
         // 配置客户端NIO线程组
         try {
             Bootstrap b = new Bootstrap();
-            b.group(group).channel(NioSocketChannel.class).option(ChannelOption.TCP_NODELAY, true).handler(new ChannelInitializer<SocketChannel>() {
+            b.group(group);
+            b.channel(NioSocketChannel.class);
+            b.option(ChannelOption.TCP_NODELAY, true);
+            b.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 public void initChannel(SocketChannel ch) throws Exception {
                     ch.pipeline().addLast("MessageDecoder", new MessageDecoder(Constans.MESSAGE_MAX_FRAME_LENGTH, Constans.MESSAGE_LENGTH_FIELD_OFFSET, Constans.MESSAGE_LENGTH_FIELD_LENGTH));
                     ch.pipeline().addLast("MessageEncoder", new MessageEncoder());
                     ch.pipeline().addLast("ReadTimeoutHandler", new ReadTimeoutHandler(Constans.NET_CONF_READ_TIMEOUT));
                     ch.pipeline().addLast("ClientLoginAuthHandler", new ClientLoginAuthReqHandler());
-                    ch.pipeline().addLast("HeartBeatHandler", new ClientHeartBeatReqHandler());
+                    // ch.pipeline().addLast("HeartBeatHandler", new
+                    // ClientHeartBeatReqHandler());
                 }
             });
             // 发起异步连接操作
@@ -58,7 +62,7 @@ public class IMClient {
             future.channel().closeFuture().sync();
             logger.info("client closed!");
         } catch (Exception e) {
-            logger.error(e,e);
+            logger.error(e, e);
         } finally {
             // 所有资源释放完成之后，清空资源，再次发起重连操作
             executor.execute(new Runnable() {

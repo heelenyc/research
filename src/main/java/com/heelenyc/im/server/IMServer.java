@@ -40,17 +40,24 @@ public class IMServer {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         ServerBootstrap b = new ServerBootstrap();
-        b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).option(ChannelOption.SO_BACKLOG, Constans.NET_CONF_BACKLOG).handler(new LoggingHandler(LogLevel.WARN))
-                .childHandler(new ChannelInitializer<SocketChannel>() {
-                    @Override
-                    public void initChannel(SocketChannel ch) throws IOException {
-                        ch.pipeline().addLast("MessageDecoder", new MessageDecoder(Constans.MESSAGE_MAX_FRAME_LENGTH, Constans.MESSAGE_LENGTH_FIELD_OFFSET, Constans.MESSAGE_LENGTH_FIELD_LENGTH));
-                        ch.pipeline().addLast("MessageEncoder", new MessageEncoder());
-                        ch.pipeline().addLast("ReadTimeoutHandler", new ReadTimeoutHandler(Constans.NET_CONF_READ_TIMEOUT));
-                        ch.pipeline().addLast("ServerLoginAuthHandler", new ServerLoginAuthRespHandler());
-                        ch.pipeline().addLast("HeartBeatHandler", new ServerHeartBeatRespHandler());
-                    }
-                });
+        b.group(bossGroup, workerGroup);
+        b.channel(NioServerSocketChannel.class);
+        // The maximum queue length for incoming connection indications (a
+        // request to connect) is set to the backlog parameter. If a connection
+        // indication arrives when the queue is full, the connection is refused.
+        b.option(ChannelOption.SO_BACKLOG, Constans.NET_CONF_BACKLOG);
+        b.handler(new LoggingHandler(LogLevel.WARN));
+        b.childHandler(new ChannelInitializer<SocketChannel>() {
+            @Override
+            public void initChannel(SocketChannel ch) throws IOException {
+                ch.pipeline().addLast("MessageDecoder", new MessageDecoder(Constans.MESSAGE_MAX_FRAME_LENGTH, Constans.MESSAGE_LENGTH_FIELD_OFFSET, Constans.MESSAGE_LENGTH_FIELD_LENGTH));
+                ch.pipeline().addLast("MessageEncoder", new MessageEncoder());
+                ch.pipeline().addLast("ReadTimeoutHandler", new ReadTimeoutHandler(Constans.NET_CONF_READ_TIMEOUT));
+                ch.pipeline().addLast("ServerLoginAuthHandler", new ServerLoginAuthRespHandler());
+                // ch.pipeline().addLast("HeartBeatHandler", new
+                // ServerHeartBeatRespHandler());
+            }
+        });
 
         // 绑定端口，同步等待成功
         b.bind(Constans.PORT).sync();

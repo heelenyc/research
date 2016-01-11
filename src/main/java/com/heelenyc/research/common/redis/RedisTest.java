@@ -42,7 +42,8 @@ public class RedisTest {
 //            }
             
 //            System.out.println(jedis.zrangeByScore("hello", 1418791485685d, 1418791486315d));
-            System.out.println(jedis.setbit("hello", 2511230, true));
+//            System.out.println(jedis.setbit("hello", 2511230, true));
+            System.out.println(jedis.get("hello") == null);
         } catch (Exception e) {
             e.printStackTrace();
         }
