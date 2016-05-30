@@ -2,6 +2,9 @@ package com.heelenyc.research.common.lrumap;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -15,6 +18,8 @@ public class LRUMapCache<K,V> {
     private Map<K, V> cache = new ConcurrentHashMap<K, V>();
     private Map<K, Long> lastUpdateTimeMap = new ConcurrentHashMap<K, Long>();
     private int expires;
+    
+    private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
     /**
      * constractor
@@ -23,6 +28,15 @@ public class LRUMapCache<K,V> {
      */
     public LRUMapCache(int expires) {
         this.expires = expires;
+        executorService.scheduleWithFixedDelay(new Runnable() {
+            
+            @Override
+            public void run() {
+                for (K key : cache.keySet()) {
+                    get(key);
+                }
+            }
+        }, expires, expires, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -40,6 +54,7 @@ public class LRUMapCache<K,V> {
         if (lastUpdateTime + expires <= System.currentTimeMillis()) {
             // 过期了
             cache.remove(p);
+            lastUpdateTimeMap.remove(p);
             return null;
         }
         return cache.get(p);
@@ -50,6 +65,7 @@ public class LRUMapCache<K,V> {
      */
     public void clear() {
         cache.clear();
+        lastUpdateTimeMap.clear();
     }
 
     

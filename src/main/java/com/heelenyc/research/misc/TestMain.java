@@ -1,13 +1,6 @@
 package com.heelenyc.research.misc;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
-import javax.net.ssl.SSLSocket;
-
-import org.springframework.core.task.TaskExecutor;
-
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author yicheng
@@ -17,37 +10,65 @@ import org.springframework.core.task.TaskExecutor;
 
 public class TestMain {
 
-    private static ExecutorService es = Executors.newFixedThreadPool(1);
     /**
      * @param args
      */
     public static void main(String[] args) {
-//        try {
-//            Thread workThread = new Thread(new Runnable() {
-//                
-//                @Override
-//                public void run() {
-//                    try {
-//                        Thread.sleep(1000*60);
-//                    } catch (InterruptedException e) {
-//                        // TODO Auto-generated catch block
-//                        e.printStackTrace();
-//                    }
-//                }
-//            });
-//            workThread.
-//            long startT = System.currentTimeMillis();
-//            Future<?> task = es.submit(workThread);
-//            while(System.currentTimeMillis() - startT < 10*1000){
-//                Thread.sleep(1000);
-//            }
-//            task.cancel(true);
-//                
-//        } catch (Exception e) {
-//            // TODO: handle exception
-//        }
-//        SSLSocket iml;
+//        MyThread t = new MyThread();
+//        t.setDaemon(true);
+//        t.start();
+        BadBean b = new BadBean(1);
+        
+        System.out.println(b.getJ());
+    }
 
+}
+
+class MyThread extends Thread {
+
+    @Override
+    public void run() {
+        System.out.println("MyThread begin!");
+        try {
+            TimeUnit.SECONDS.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("MyThread over!");
+
+    }
+}
+
+class BadBean {
+    public static int i = 0;
+
+    private int j;
+    
+    /**
+     * 
+     */
+    public BadBean(int j) {
+        this.j = j;
+    }
+    
+    static {
+            i = 1 / 0;
+    }
+
+    public static int getI() {
+        return i;
+    }
+
+    public static void setI(int i) {
+        BadBean.i = i;
+    }
+
+    public int getJ() {
+        return j;
+    }
+
+    public void setJ(int j) {
+        this.j = j;
     }
     
     
