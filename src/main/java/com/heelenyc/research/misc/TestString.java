@@ -127,11 +127,13 @@ public class TestString {
 //        for (String string : aString) {
 //            System.out.println(string);
 //        }
-        // System.out.println(new Date());
-        HashSet<String> h = new HashSet<String>();
-        h.add("hello");
-        h.add("world");
-        System.out.println(h);
+//        // System.out.println(new Date());
+//        HashSet<String> h = new HashSet<String>();
+//        h.add("hello");
+//        h.add("world");
+//        System.out.println(h);
+        String text = "能搜到防sdfsdf守打法";
+        System.out.println(text.substring(0, 5));
     }
 
     protected static String ensureTextLength(String alert, int maxCount) {

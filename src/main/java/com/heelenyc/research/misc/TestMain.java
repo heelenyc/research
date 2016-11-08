@@ -1,5 +1,6 @@
 package com.heelenyc.research.misc;
 
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -17,9 +18,11 @@ public class TestMain {
 //        MyThread t = new MyThread();
 //        t.setDaemon(true);
 //        t.start();
-        BadBean b = new BadBean(1);
-        
-        System.out.println(b.getJ());
+//        BadBean b = new BadBean(1);
+//        
+//        System.out.println(b.getJ());
+        Properties sysProps = System.getProperties();
+        sysProps.list(System.out);
     }
 
 }

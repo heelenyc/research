@@ -11,10 +11,16 @@ public class OuterClass {
     public static String ss = "i am a static member";
     public String s = "i am a non-static member";
     
+    public void outerFun(){
+        OuterClass outer = new OuterClass();
+        OuterClass.NonStaticInner inner = outer.new NonStaticInner();
+    }
+    
     class NonStaticInner{
         public void innerfun() {
             System.out.println(s);
             System.out.println(ss);
+            OuterClass.this.outerFun();
         }
     }
     

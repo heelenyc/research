@@ -7,6 +7,7 @@ package com.heelenyc.research.reflect;
  */
 public class AddImp implements AddInface {
 
+    //private AddImp(){};
     @Override
     public int add(int o1, int o2) {
         return o1 + o2 ;
