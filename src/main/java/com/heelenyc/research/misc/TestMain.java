@@ -1,5 +1,7 @@
 package com.heelenyc.research.misc;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -21,8 +23,13 @@ public class TestMain {
 //        BadBean b = new BadBean(1);
 //        
 //        System.out.println(b.getJ());
-        Properties sysProps = System.getProperties();
-        sysProps.list(System.out);
+//        Properties sysProps = System.getProperties();
+//        sysProps.list(System.out);
+    	
+//    	Arrays.asList(new String[]{"",""});
+//    	Arrays.asList("","");
+    	
+    	System.out.println("\r\n".getBytes().length);
     }
 
 }

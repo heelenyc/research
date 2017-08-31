@@ -1,11 +1,11 @@
-package com.heelenyc.research.reflect;
+package com.heelenyc.research.reflect.buiss;
 
 /**
  * @author yicheng
  * @since 2014年10月13日
  * 
  */
-public interface AddInface {
+public interface AddInface2 {
 
     /**
      * @param o1

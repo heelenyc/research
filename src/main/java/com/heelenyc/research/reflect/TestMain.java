@@ -4,6 +4,11 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
 
+import com.heelenyc.research.reflect.buiss.AddImp;
+import com.heelenyc.research.reflect.buiss.AddInface;
+import com.heelenyc.research.reflect.buiss.AddInface2;
+import com.heelenyc.research.reflect.dynamicproxy.DynamicProxy;
+
 /**
  * @author yicheng
  * @since 2014年10月13日
@@ -13,16 +18,20 @@ public class TestMain {
 
     public static void main(String args[]) throws ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
-        // AddInface addObject = new AddImp();
-        //
-        // InvocationHandler handler = new MyInvocationHandler(addObject);
-        // Class<?> cls = addObject.getClass();
-        //
-        // AddInface proxy = (AddInface)
-        // Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
-        // cls.getInterfaces(), handler);
-        //
-        // System.out.println(proxy.addlong(1, 2));
+//         AddInface addObject = new AddImp();
+//        
+//         InvocationHandler handler = new MyInvocationHandler(addObject);
+//         Class<?> cls = addObject.getClass();
+//        
+//         AddInface proxy = (AddInface)
+//         Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+//         cls.getInterfaces(), handler);
+//        
+//         System.out.println(proxy.addlong(1, 2));
+    	
+    		AddInface addObject = new AddImp();
+    		AddInface2 proxy = (AddInface2)DynamicProxy.bind(addObject);
+    		System.out.println(proxy.addlong(1, 2));
 
         // Class<?> api =
         // Class.forName("com.heelenyc.research.reflect.AddInface");
@@ -49,13 +58,13 @@ public class TestMain {
         //
         // }
 
-        Class<?> api = Class.forName("com.heelenyc.research.reflect.AddImp");
-        try {
-            AddImp obj = (AddImp) api.newInstance();
-            System.out.println(obj.add(1, 2));
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        }
+//        Class<?> api = Class.forName("com.heelenyc.research.reflect.AddImp");
+//        try {
+//            AddImp obj = (AddImp) api.newInstance();
+//            System.out.println(obj.add(1, 2));
+//        } catch (InstantiationException e) {
+//            e.printStackTrace();
+//        }
 
     }
 

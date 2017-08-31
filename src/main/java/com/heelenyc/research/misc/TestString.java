@@ -132,8 +132,9 @@ public class TestString {
 //        h.add("hello");
 //        h.add("world");
 //        System.out.println(h);
-        String text = "能搜到防sdfsdf守打法";
-        System.out.println(text.substring(0, 5));
+//        String text = "能搜到防sdfsdf守打法";
+//        System.out.println(text.substring(0, 5));
+    	System.out.println(new SimpleDateFormat("yyyyMMdd").format(new Date()));
     }
 
     protected static String ensureTextLength(String alert, int maxCount) {
